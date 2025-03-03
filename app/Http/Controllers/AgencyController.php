@@ -36,6 +36,12 @@ class AgencyController extends Controller
 
         $agency = Agency::where('email', $email)->first();
 
+        if (!$agency) {
+            return response()->json([
+                'error' => 'Agency not found'
+            ], 404);
+        }
+
         return response()->json([
             'id' => $agency->id,
             'name' => $agency->name,
