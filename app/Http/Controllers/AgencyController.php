@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\Agency;
 
 class AgencyController extends Controller
@@ -19,9 +20,27 @@ class AgencyController extends Controller
             'id' => \Illuminate\Support\Str::uuid(),
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'secret' => bcrypt($request->get('secret'))
+            'secret' => Crypt::encryptString($request->get('secret'))
         ]);
 
         return response()->json(['id' => $agency->id], 201);
+    }
+
+    public function show(Request $request)
+    {
+        $email = $request->get('email');
+
+        if (!$email) {
+            return response()->json(['message' => 'Email is required'], 400);
+        }
+
+        $agency = Agency::where('email', $email)->first();
+
+        return response()->json([
+            'id' => $agency->id,
+            'name' => $agency->name,
+            'email' => $agency->email,
+            'secret' => Crypt::decryptString($agency->secret)
+        ]);
     }
 }
