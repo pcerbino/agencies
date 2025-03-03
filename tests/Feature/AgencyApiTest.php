@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Agency;
+use Illuminate\Support\Facades\Crypt;
 use Tests\TestCase;
 
 class AgencyApiTest extends TestCase
@@ -48,5 +49,25 @@ class AgencyApiTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
+    }
+
+    /** @test */
+    public function it_retrieves_an_agency_by_email()
+    {
+        $agency = Agency::factory()->create([
+            'email' => 'test@example.com',
+            'name' => 'Test Agency',
+            'secret' => Crypt::encryptString('mysecretstring')
+        ]);
+
+        $response = $this->getJson('/api/agencies?email=test@example.com');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'id' => $agency->id,
+                'name' => 'Test Agency',
+                'email' => 'test@example.com',
+                'secret' => 'mysecretstring'
+            ]);
     }
 }
