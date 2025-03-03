@@ -70,4 +70,15 @@ class AgencyApiTest extends TestCase
                 'secret' => 'mysecretstring'
             ]);
     }
+
+    /** @test */
+    public function it_returns_error_if_agency_not_found()
+    {
+        $response = $this->getJson('/api/agencies?email=notfound@example.com');
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'error' => 'Agency not found'
+            ]);
+    }
 }
