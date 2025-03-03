@@ -40,7 +40,15 @@ Run the migrations to set up the database tables:
 php artisan migrate
 ```
 
-### 5. Start the development server
+### 5 Generate the Application Key
+
+To generate a new encryption key for your Laravel application, you can run the following Artisan command:
+
+```bash
+php artisan key:generate
+```
+
+### 6. Start the development server
 
 Finally, start the Laravel development server:
 
