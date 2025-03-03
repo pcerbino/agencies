@@ -9,6 +9,12 @@ class AgencyController extends Controller
 {
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:agencies,email',
+            'name' => 'required|string|max:64',
+            'secret' => 'required|string'
+        ]);
+
         $agency = Agency::create([
             'id' => \Illuminate\Support\Str::uuid(),
             'name' => $request->get('name'),
